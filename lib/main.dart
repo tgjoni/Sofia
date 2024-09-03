@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: TextField(
                     controller: _textController,
                     decoration: InputDecoration(
-                      hintText: 'Enter text',
+                      hintText: 'Enter your note',
                       contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                     ),
                   ),
