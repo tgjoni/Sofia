@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "sofia"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+flask = "^2.3.0"
+pandas = "^2.0.3"
+virtualenv = "^20.24.5"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.0"
