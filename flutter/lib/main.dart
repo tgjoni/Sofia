@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -39,13 +41,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  Future<String> _getFilePath() async {
-    final directory = await getApplicationDocumentsDirectory();
-
-    print(directory.path);
-    return '${directory.path}/saved_items.csv';
-  }
-
   Future<void> _saveItem() async {
     if (_textController.text.isNotEmpty) {
       setState(() {
@@ -53,31 +48,43 @@ class _MyHomePageState extends State<MyHomePage> {
         _textController.clear();
       });
 
-      // Save to CSV
-      await _writeToCsv();
+      // Call the API to save the item
+
+      print("GHJK ${_textController.text}");
+      await _sendDataToApi(_textController.text);
     }
   }
 
-  Future<void> _writeToCsv() async {
-    final filePath = await _getFilePath();
-    final file = File(filePath);
+  Future<void> _sendDataToApi(String item) async {
+    print(item);
+    const url =
+        'http://127.0.0.1:8000/save_csv'; // Replace with your API endpoint
 
-    List<List<String>> csvData = [
-      ["Item"], // CSV header
-      ..._items.map((item) => [item]), // Each item as a new row
-    ];
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'item': {'das': 1},
+        }),
+      );
 
-    String csv = const ListToCsvConverter().convert(csvData);
-    await file.writeAsString(csv);
-
-    print('CSV written successfully at: $filePath'); // Confirm in the console
+      if (response.statusCode == 200) {
+        print('Item saved to API');
+      } else {
+        print('Failed to save item to API');
+      }
+    } catch (e) {
+      print('Error sending data to API: $e');
+    }
   }
 
   Future<void> _deleteItem(int index) async {
     setState(() {
       _items.removeAt(index);
     });
-    await _writeToCsv(); // Update CSV after deletion
   }
 
   @override
